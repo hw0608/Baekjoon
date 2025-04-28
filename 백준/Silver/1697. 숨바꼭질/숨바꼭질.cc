@@ -1,53 +1,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int dist[100001];
-int dx[2] = { -1,1 };
+int N, K;
+int cost[100005];
 
 int main(void) {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+	ios::sync_with_stdio(false);
+	cout.tie(NULL);
+	cin.tie(NULL);
 
-	queue<int> q;
-	int N, K;
-
-	fill(dist, dist + 100001, -1);
 	cin >> N >> K;
 
-	if (N == K) {
-		cout << 0;
-		return 0;
-	}
-
-	dist[N] = 0;
-
+	fill(&cost[0], &cost[100005], -1);
+	cost[N] = 0;
+	queue<int> q;
 	q.push(N);
 
 	while (!q.empty()) {
-		int cur = q.front();
-		q.pop();
+		int cur = q.front(); q.pop();
 
-		for (int dir = 0; dir < 2; dir++) {
-			int nx = cur + dx[dir];
-
-			if (nx < 0 || nx > 100001) continue;
-			if (dist[nx] >= 0) continue;
-			if (nx == K) {
-				cout << dist[cur] + 1;
-				return 0;
-			}
-			dist[nx] = dist[cur] + 1;
-			q.push(nx);
-		}
-
-		if (2 * cur < 0 || 2 * cur > 100001) continue;
-		if (dist[2 * cur] >= 0) continue;
-		if (2 * cur == K) {
-			cout << dist[cur] + 1;
+		if (cur == K) {
+			cout << cost[K];
 			return 0;
 		}
-		dist[2 * cur] = dist[cur] + 1;
-		q.push(2 * cur);
-	}
 
+		if (cur + 1 <= 100000 && cost[cur + 1] == -1) {
+			cost[cur + 1] = cost[cur] + 1;
+			q.push(cur + 1);
+		}
+		if (cur - 1 >= 0 && cost[cur - 1] == -1) {
+			cost[cur - 1] = cost[cur] + 1;
+			q.push(cur - 1);
+		}
+		if (cur * 2 <= 100000 && cost[cur * 2] == -1) {
+			cost[cur * 2] = cost[cur] + 1;
+			q.push(cur * 2);
+		}
+	}
 }
